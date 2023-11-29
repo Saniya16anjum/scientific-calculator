@@ -139,7 +139,6 @@
         </div>
         <div class="row">
             <input type="button" value="ln" onclick="appendToDisplay('Math.log(')">
-            <input type="button" value="±" onclick="negate()">
             <input type="button" value="0" onclick="appendToDisplay('0')">
             <input type="button" value="." onclick="appendToDisplay('.')">
             <input type="button" value="=" onclick="calculate()">
@@ -181,11 +180,6 @@
             result *= i;
         }
         document.getElementById('display').value = result;
-    }
-
-    function negate() {
-        var currentDisplay = document.getElementById('display').value;
-        document.getElementById('display').value = -parseFloat(currentDisplay);
     }
 
     function calculate() {
