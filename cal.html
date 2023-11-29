@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casio Scientific Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        #calculator {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        #main-calculator {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #history-memory {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #menu-bar {
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        #menu-bar h2 {
+            margin: 0;
+            font-size: 20px;
+            padding-right: 700px;
+        }
+
+        #memory-buttons {
+            text-align: center;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: right;
+        }
+
+        input[type="button"] {
+            width: 18%;
+            padding: 15px;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .small-button {
+            width: 9%;
+            padding: 5px;
+            margin: 2px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="calculator">
+    <div id="main-calculator">
+         <input type="text" id="display" disabled>
+        <div id="menu-bar">
+            <h2>Scientific</h2>
+        </div>
+        <div id="memory-buttons" class="row">
+            <input type="button" class="small-button" value="MC" onclick="memoryClear()">
+            <input type="button" class="small-button" value="MR" onclick="memoryRecall()">
+            <input type="button" class="small-button" value="M+" onclick="memoryAdd()">
+            <input type="button" class="small-button" value="M-" onclick="memorySubtract()">
+            <input type="button" class="small-button" value="MS" onclick="memoryStore()">
+        </div>
+        <div class="row">
+            <input type="button" value="2^n" onclick="appendToDisplay('2**')">
+            <input type="button" value="π" onclick="appendToDisplay('Math.PI')">
+            <input type="button" value="e" onclick="appendToDisplay('Math.exp(')">
+            <input type="button" value="C" onclick="clearDisplay()">
+            <input type="button" value="Back" onclick="backspace()">
+        </div>
+        <div class="row">
+            <input type="button" value="x²" onclick="appendToDisplay('**2')">
+            <input type="button" value="1/x" onclick="appendToDisplay('1/(')">
+            <input type="button" value="|x|" onclick="appendToDisplay('Math.abs(')">
+            <input type="button" value="exp" onclick="appendToDisplay('Math.exp(')">
+            <input type="button" value="mod" onclick="appendToDisplay('%')">
+        </div>
+        <div class="row">
+            <input type="button" value="√x" onclick="appendToDisplay('Math.sqrt(')">
+            <input type="button" value="(" onclick="appendToDisplay('(')">
+            <input type="button" value=")" onclick="appendToDisplay(')')">
+            <input type="button" value="n!" onclick="factorial()">
+            <input type="button" value="/" onclick="appendToDisplay('/')">
+        </div>
+        <div class="row">
+            <input type="button" value="x^y" onclick="appendToDisplay('**')">
+            <input type="button" value="7" onclick="appendToDisplay('7')">
+            <input type="button" value="8" onclick="appendToDisplay('8')">
+            <input type="button" value="9" onclick="appendToDisplay('9')">
+            <input type="button" value="×" onclick="appendToDisplay('*')">
+        </div>
+        <div class="row">
+            <input type="button" value="10^x" onclick="appendToDisplay('10**')">
+            <input type="button" value="4" onclick="appendToDisplay('4')">
+            <input type="button" value="5" onclick="appendToDisplay('5')">
+            <input type="button" value="6" onclick="appendToDisplay('6')">
+            <input type="button" value="-" onclick="appendToDisplay('-')">
+        </div>
+        <div class="row">
+            <input type="button" value="log" onclick="appendToDisplay('Math.log10(')">
+            <input type="button" value="1" onclick="appendToDisplay('1')">
+            <input type="button" value="2" onclick="appendToDisplay('2')">
+            <input type="button" value="3" onclick="appendToDisplay('3')">
+            <input type="button" value="+" onclick="appendToDisplay('+')">
+        </div>
+        <div class="row">
+            <input type="button" value="ln" onclick="appendToDisplay('Math.log(')">
+            <input type="button" value="±" onclick="negate()">
+            <input type="button" value="0" onclick="appendToDisplay('0')">
+            <input type="button" value="." onclick="appendToDisplay('.')">
+            <input type="button" value="=" onclick="calculate()">
+        </div>
+    </div>
+    <div id="history-memory">
+        <!-- Placeholder for History and Memory -->
+        <h3>History</h3>
+        <div id="history"></div>
+        <h3>Memory</h3>
+        <div id="memory"></div>
+    </div>
+</div>
+
+<script>
+    var memory = 0;
+
+    function appendToDisplay(value) {
+        document.getElementById('display').value += value;
+    }
+
+    function clearDisplay() {
+        document.getElementById('display').value = '';
+    }
+
+    function clearAll() {
+        document.getElementById('display').value = '';
+    }
+
+    function backspace() {
+        var currentDisplay = document.getElementById('display').value;
+        document.getElementById('display').value = currentDisplay.slice(0, -1);
+    }
+
+    function factorial() {
+        var n = document.getElementById('display').value;
+        var result = 1;
+        for (var i = 1; i <= n; i++) {
+            result *= i;
+        }
+        document.getElementById('display').value = result;
+    }
+
+    function negate() {
+        var currentDisplay = document.getElementById('display').value;
+        document.getElementById('display').value = -parseFloat(currentDisplay);
+    }
+
+    function calculate() {
+        try {
+            var result = eval(document.getElementById('display').value);
+            document.getElementById('history').innerHTML += document.getElementById('display').value + ' = ' + result + '<br>';
+            document.getElementById('display').value = result;
+        } catch (error) {
+            document.getElementById('display').value = 'Error';
+        }
+    }
+
+    function memoryClear() {
+        memory = 0;
+        document.getElementById('memory').innerHTML = memory;
+    }
+
+    function memoryRecall() {
+        document.getElementById('display').value = memory;
+    }
+
+    function memoryStore() {
+        memory = parseFloat(document.getElementById('display').value);
+        document.getElementById('memory').innerHTML = memory;
+    }
+
+    function memoryAdd() {
+        memory += parseFloat(document.getElementById('display').value);
+        document.getElementById('memory').innerHTML = memory;
+    }
+
+    function memorySubtract() {
+        memory -= parseFloat(document.getElementById('display').value);
+        document.getElementById('memory').innerHTML = memory;
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
